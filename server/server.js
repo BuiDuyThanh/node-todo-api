@@ -48,3 +48,5 @@ newUser.save().then((doc) => {
 });
 
 */
+
+module.exports = {app};
