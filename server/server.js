@@ -1,3 +1,5 @@
+require('./config/config');
+
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -9,7 +11,9 @@ var {User} = require('./models/user');
 
 
 var app = express();
-const port = process.env.PORT || 3000;		// PORT will be set when it's deployed onto Heroku, and it won't be set when run locally (run on port 3000 instead)
+
+//const port = process.env.PORT || 3000;		// PORT will be set when it's deployed onto Heroku, and it won't be set when run locally (run on port 3000 instead)
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
