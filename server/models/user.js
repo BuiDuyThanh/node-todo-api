@@ -42,8 +42,9 @@ UserSchema.methods.toJSON = function () {
 	return _.pick(userObject, ['_id', 'email']);
 };
 
+// instant method
 UserSchema.methods.generateAuthToken = function () {
-	var user = this;
+	var user = this;	// instant variable (lowercase variable) called with individual document
 	var access = 'auth';
 	var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
 
@@ -63,6 +64,29 @@ UserSchema.methods.generateAuthToken = function () {
 	});
 
 	*/
+};
+
+// Model method
+UserSchema.statics.findByToken = function (token) {
+	var User = this;	// model variable (uppercase variable) called with Model binding
+	var decoded;
+
+	try {
+		decoded = jwt.verify(token, 'abc123');
+	} catch (e) {
+		return Promise.reject();	// this is used by catch((e)) in server.js
+	/*	
+		return new Promise((resolve, reject) => {
+			reject();
+		});
+	*/
+	}
+
+	return User.findOne({		// return the User here to take user as parameter in findByToken().then(user) (server.js)
+		'_id': decoded._id,
+		'tokens.token': token,
+		'tokens.access': 'auth'
+	});
 };
 
 var User = mongoose.model('User', UserSchema);
