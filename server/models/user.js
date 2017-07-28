@@ -90,10 +90,11 @@ UserSchema.statics.findByToken = function (token) {
 	});
 };
 
+// using Mongoose Middleware to automatically run some code (in this case, check and hash password) before a certain event (save document event in this case)
 UserSchema.pre('save', function (next) {
 	var user = this;
 
-	if (user.isModified('password')) {	// check to prevent the hashed password not to be hashed again
+	if (user.isModified('password')) {	// check if the new password is set. If it is new, hash it; otherwise next(). It prevents the hashed password not to be hashed again
 		bcrypt.genSalt(10, (err, salt) => {
 			bcrypt.hash(user.password, salt, (err, hash) => {
 				user.password = hash;	// override the plain text password to hashed password
