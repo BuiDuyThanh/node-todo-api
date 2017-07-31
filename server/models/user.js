@@ -67,6 +67,17 @@ UserSchema.methods.generateAuthToken = function () {
 	*/
 };
 
+UserSchema.methods.removeToken = function (token) {
+	var user = this;
+
+	return user.update({
+		$pull: {			// remove the token, id and access property
+			// check if the token in parameter match the one in tokens array
+			tokens: {token} // {token: token}
+		}
+	});
+};
+
 // Model method
 UserSchema.statics.findByToken = function (token) {
 	var User = this;	// model variable (uppercase variable) called with Model binding
