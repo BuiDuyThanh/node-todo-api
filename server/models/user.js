@@ -90,6 +90,28 @@ UserSchema.statics.findByToken = function (token) {
 	});
 };
 
+
+UserSchema.statics.findByCredentials = function (email, password) {
+	var User = this;
+
+	return User.findOne({email}).then((user) => {
+		if (!user) {
+			return Promise.reject();	// trigger the catch in the server.js
+		}
+
+		return new Promise((resolve, reject) => {
+			// Use bcrypt.compare to compare password and user.password
+			bcrypt.compare(password, user.password, (err, res) => {
+				if (res) {
+					resolve(user);
+				} else {
+					reject();
+				}
+			});
+		});
+	});
+};
+
 // using Mongoose Middleware to automatically run some code (in this case, check and hash password) before a certain event (save document event in this case)
 UserSchema.pre('save', function (next) {
 	var user = this;
